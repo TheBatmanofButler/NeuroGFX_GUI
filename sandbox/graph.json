@@ -1,20 +1,8 @@
 {"nodes":
-  [{"name":"Myriel"},
-  {"name":"Napoleon"},
-  {"name":"Mlle.Baptistine"},
-  {"name":"Mme.Magloire"},
-  {"name":"CountessdeLo"},
-  {"name":"Geborand"},
-  {"name":"Champtercier"},
-  {"name":"Cravatte"},
-  {"name":"Count"},
-  {"name":"OldMan"},
-  {"name":"Labarre"},
-  {"name":"Valjean"},
-  {"name":"Marguerite"},
-  {"name":"Mme.deR"},
-  {"name":"Isabeau"},
-  {"name":"Gervais"}],
+  [{"name":"Myriel", "x": 110, "y": 100},
+  {"name":"Napoleon", "x": 210, "y": 130},
+  {"name":"Mlle.Baptistine", "x": 310, "y": 110},
+  {"name":"Mme.Magloire", "x": 410, "y": 150}],
 "links":
 [{"source":1,"target":0}]
 }

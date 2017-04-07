@@ -1,157 +1,150 @@
-graphData = {"nodes":
-  [{"name":"Myriel"},
-  {"name":"Napoleon"},
-  {"name":"Mlle.Baptistine"},
-  {"name":"Mme.Magloire"},
-  {"name":"CountessdeLo"},
-  {"name":"Geborand"},
-  {"name":"Champtercier"},
-  {"name":"Cravatte"},
-  {"name":"Count"},
-  {"name":"OldMan"},
-  {"name":"Labarre"},
-  {"name":"Valjean"},
-  {"name":"Marguerite"},
-  {"name":"Mme.deR"},
-  {"name":"Isabeau"},
-  {"name":"Gervais"}],
-"links":
-[{"source":1,"target":0}]
-}
+d3.json("graph.json", function(jsonData) {
 
-var w = 960,
-    h = 500
-
-var svg = d3.select("body").append("svg:svg")
-    .attr("width", w)
-    .attr("height", h);
-
-// d3.json("graph.json", function(graphData) {
-  console.log(graphData)
-    // drag behavior
-    var node_drag = d3.behavior.drag()
-        .on("dragstart", dragstart)
-        .on("drag", dragmove)
-        .on("dragend", dragend);
-
-    function dragstart(d, i) {
-        // force.stop() // stops the force auto positioning before you start dragging
-        console.log(force)
-        graphData.links.push({"source": 2, "target": 3})
-        refresh();
+  panelNodes = {
+    "nodes": [
+      {"groupNum": 0, "x": 10, "y": 10},
+      {"groupNum": 1, "x": 10, "y": 40},
+      {"groupNum": 2, "x": 10, "y": 80},
+      {"groupNum": 3, "x": 10, "y": 120},
+      {"groupNum": 4, "x": 10, "y": 160}
+    ],
+    "links":
+    [{"source":1,"target":0}]
     }
 
-    function dragmove(d, i) {
-        d.px += d3.event.dx;
-        d.py += d3.event.dy;
-        d.x += d3.event.dx;
-        d.y += d3.event.dy; 
-        tick(); // this is the key to make it work together with updating both px,py,x,y on d !
-    }
+  jsonData["nodes"].push.apply(jsonData["nodes"], panelNodes["nodes"]);
 
-    function dragend(d, i) {
-        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
-        tick();
-        // force.resume();
-    }
+  var width = 960,
+      height = 500;
+      color = d3.scale.category20c();
 
-    var force = self.force = d3.layout.force()
-        .nodes(graphData.nodes)
-        .links(graphData.links)
-        .gravity(.05)
-        .distance(100)
-    .linkDistance(60)
-    .charge(-300)
-        .size([w, h])
-        .start();
+  var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height);
 
-    var link = svg.selectAll("line.link")
-        .data(graphData.links)
-        .enter().append("svg:line")
-        .attr("class", "link")
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+  var drag = d3.behavior.drag()
+   .on("drag", function(d, i) {
+     d.x += d3.event.dx
+     d.y += d3.event.dy
+     d3.select(this).attr("cx", d.x).attr("cy", d.y);
+     link.each(function(l, li) {
+       if (l.source == i) {
+         d3.select(this).attr("x1", d.x).attr("y1", d.y);
+       } else if (l.target == i) {
+         d3.select(this).attr("x2", d.x).attr("y2", d.y);
+       }
+     })
+   })
 
-    var node = svg.selectAll("g.node")
-        .data(graphData.nodes)
-      .enter()
-      .append("svg:g")
+  var nodes = jsonData["nodes"],
+      links = jsonData["links"],
+      node = svg.selectAll(".node"),
+      link = svg.selectAll(".link");
+
+  node = node
+    .data(nodes)
+
+  node
+  .enter().append("g")
+    .attr("class", "node")
+    .on("click", click);
+
+  // add the nodes
+  node.append("circle")
+      .attr("cx", function(d) {
+        return d.x
+      })
+      .attr("cy", function(d) {
+        return d.y
+      })
+      .attr("r", 5)
+      .style("fill", function(d) { return color(d.groupNum); })
+      .call(drag)
+      .on("dragend", function(d, i) {
+
+        var replace_x = 10
+        var replace_y;
+        switch (d.groupNum) {
+          case 0:
+            replace_y = 10;
+            break;
+          case 1:
+            replace_y = 40;
+            break;
+          case 2:
+            replace_y = 80;
+            break;
+          case 3:
+            replace_y = 120;
+            break;
+          case 4:
+            replace_y = 160;
+            break;
+          }
+        nodes.push({"groupNum": d.groupNum, "x": replace_x, "y": replace_y});
+        refresh()
+       });
+   
+  function refresh() {
+
+      node = node
+        .data(nodes)
+
+      node
+      .enter().append("g")
         .attr("class", "node")
-        .call(node_drag);
+        .on("click", click);
 
+    // add the nodes
     node.append("circle")
-        .attr("class", "circle")
-        .attr("x", "-8px")
-        .attr("y", "-8px")
-      .attr("r", 3)
-      .style("fill", "red")
+        .attr("cx", function(d) {
+          return d.x
+        })
+        .attr("cy", function(d) {
+          return d.y
+        })
+        .attr("r", 5)
+        .style("fill", function(d) { return color(d.groupNum); })
+        .call(drag);
+   
+    // // add the text 
+    // node.append("text")
+    //     .attr("x", 12)
+    //     .attr("dy", ".35em")
+    //     .text(function(d) { return d.groupNum; });
 
-    node.append("svg:text")
-        .attr("class", "nodetext")
-        .attr("dx", 12)
-        .attr("dy", ".35em")
-        .text(function(d) { return d.name });
+    link = link.data(links);
 
-    force.on("tick", tick);
+    link.enter().insert("line", ".node")
+      .attr("class", "link")
+      .attr("x1", function(l) {
+       var sourceNode = jsonData.nodes.filter(function(d, i) {
+         return i == l.source
+       })[0];
+       d3.select(this).attr("y1", sourceNode.y);
+       return sourceNode.x
+      })
+      .attr("x2", function(l) {
+       var targetNode = jsonData.nodes.filter(function(d, i) {
+         return i == l.target
+       })[0];
+       d3.select(this).attr("y2", targetNode.y);
+       return targetNode.x
+      })
+     .attr("fill", "none")
+     .attr("stroke", "black");
 
-    function tick() {
-      link.attr("x1", function(d) { return d.source.x; })
-          .attr("y1", function(d) { return d.source.y; })
-          .attr("x2", function(d) { return d.target.x; })
-          .attr("y2", function(d) { return d.target.y; });
+  }
 
-      node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-    };
-
-    function refresh() {
-
-        // svg.selectAll("*").remove();
-
-        console.log(svg)
-
-        force
-        .nodes(graphData.nodes)
-        .links(graphData.links)
-        .gravity(.05)
-        .distance(100)
-        // .charge(-300)
-        .size([w, h])
-        .start();
-
-        link
-        .data(graphData.links)
-        .enter().append("svg:line")
-        .attr("class", "link")
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-        node
-        .data(graphData.nodes)
-      .enter()
-      .append("svg:g")
-        .attr("class", "node")
-        .call(node_drag);
-
-    node.append("circle")
-        .attr("class", "circle")
-        .attr("x", "-8px")
-        .attr("y", "-8px")
-      .attr("r", 3)
-      .style("fill", "red")
-
-    node.append("svg:text")
-        .attr("class", "nodetext")
-        .attr("dx", 12)
-        .attr("dy", ".35em")
-        .text(function(d) { return d.name });
-
-    force.on("tick", tick);
-
-    }
-
-
-// });
+  refresh()
+   
+  // action to take on mouse click
+  function click() {
+      d3.select(this).select("text").transition()
+          .duration(750)
+          .attr("x", 22)
+          .style("stroke", "lightsteelblue")
+          .style("stroke-width", ".5px")
+          .style("font", "20px sans-serif");
+  }
+});

@@ -2,26 +2,41 @@ html, body {
 	padding: 0;
 	margin: 0;
 }
-
-.node {
-	stroke: #000;
-	stroke-width: 1.5px;
+ /*
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+ 
+path.link.twofive {
+  opacity: 0.25;
+}
+ 
+path.link.fivezero {
+  opacity: 0.50;
+}
+ 
+path.link.sevenfive {
+  opacity: 0.75;
+}
+ 
+path.link.onezerozero {
+  opacity: 1.0;
+}
+ */
+circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+ 
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
 }
 
 .link {
-	stroke: #999;
-	stroke-width: 1.5px;
-}
-
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 60px;
-  height: 28px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: "red";
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
+  stroke: #999;
 }
