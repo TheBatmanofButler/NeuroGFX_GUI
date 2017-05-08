@@ -26,19 +26,23 @@ d3.json("graph.json", function(jsonData) {
         if (deleteMode) {
           d3.select(this).attr("xlink:href","delete.svg");
           node.on("click", function(d, i) {
+            console.log(i);
+            console.log(nodes);
             for (var ind in links) {
               var l = links[ind];
               console.log(l);
               if (l.source == i || l.target == i) {
                 console.log(l);
                 d3.select(link[0][ind]).remove();
-
+                links.splice(ind, 1);
               }
             }
             d3.select(this).remove();
+            nodes.splice(i, 1);
           });
           link.on("click", function(d, i) {
               d3.select(this).remove();
+              links.splice(i, 1);
           });
         }
         else {
