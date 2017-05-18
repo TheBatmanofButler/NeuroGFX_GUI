@@ -11,7 +11,7 @@ function loadCanvas() {
     // whole canvas initialization
     var width = window.innerWidth,
         height = window.innerHeight,
-        resolution = 20,
+        resolution = 10,
         color = d3.scale.category20c();
 
     var deleteMode = false;
@@ -116,6 +116,8 @@ function loadCanvas() {
         .attr("y", 400)
         .attr("width", 30)
         .on("click", function() {
+
+        // save functionality adopted from http://techslides.com/save-svg-as-an-image
 
         var filename = prompt("Image name (will save as png automatically): ", "");
 
