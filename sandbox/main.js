@@ -41,13 +41,13 @@ function loadCanvas() {
             node.on("click", function(d, i) {
               console.log(d3.select(this).attr("x"))
               if (d.x != 10) {
-                // for (var ind in links) {
-                //   var l = links[ind];
-                //   if (l.source == i || l.target == i) {
-                //     d3.select(link[0][ind]).remove();
-                //     links.splice(ind, 1);
-                //   }
-                // }
+                for (var ind in links) {
+                  var l = links[ind];
+                  if (l.source == i || l.target == i) {
+                    d3.select(link[0][ind]).remove();
+                    links.splice(ind, 1);
+                  }
+                }
                 // console.log(node.length);
                 // console.log(nodes.length);
                 // console.log(node[0].length);
@@ -70,14 +70,15 @@ function loadCanvas() {
                 // console.log(nodes.length);
               }
             });
-            // link.on("click", function(d, i) {
-            //     d3.select(this).remove();
-            //     links.splice(i, 1);
-            // });
+            link.on("click", function(d, i) {
+                d3.select(this).remove();
+                links.splice(i, 1);
+            });
           }
           else {
             console.log(213);
             d3.select(this).attr("xlink:href","trash.svg");
+            node.on("click", null);
             node
               .call(panelDrag)
               .on("dblclick", doubleClick);
@@ -148,8 +149,6 @@ function loadCanvas() {
 
           a.click();
         };
-
-
     });
 
     function binaryblob(){
@@ -181,10 +180,22 @@ function loadCanvas() {
             d3.select(this).attr("xlink:href","paint2.svg");
             node.on("click", function(d, i) {
               var c = prompt("Color Hex Code:", "#");
+              nodes[i].color = c;
+
+              for (var k in nodes_copy) {
+                if (nodes_copy[k].x == nodes[i].x &&
+                    nodes_copy[k].y == nodes[i].y) {
+                  nodes_copy[k].color = c;
+                  break;
+                }
+              }
+
+              nodes_copy[i].color = c;
               d3.select(this).style("fill", c);
             });
             link.on("click", function(d, i) {
               var c = prompt("Color Hex Code:", "#");
+              links[i].color = c;
               d3.select(this).style("stroke", c);
             });
           }
@@ -227,8 +238,8 @@ function loadCanvas() {
     // left panel initialization
     var initialNodeJSON = {
       "nodes": [
-        {"labelType": "small", "rectText": "", "x": 10, "y": 10},
-        {"labelType": "large", "rectText": "", "x": 10, "y": 100}],
+        {"labelType": "small", "color": "red", "rectText": "", "x": 10, "y": 10},
+        {"labelType": "large", "color": "red", "rectText": "", "x": 10, "y": 100}],
       "links": []};
 
     jsonData["nodes"].push.apply(jsonData["nodes"], initialNodeJSON["nodes"])
@@ -306,8 +317,8 @@ function loadCanvas() {
             replace_y = 100;
         }
 
-        nodes.push({"labelType": d.labelType, "rectText": "", "x": replace_x, "y": replace_y});
-        nodes_copy.push({"labelType": d.labelType, "rectText": "", "x": replace_x, "y": replace_y});
+        nodes.push({"labelType": d.labelType, "color": "red", "rectText": "", "x": replace_x, "y": replace_y});
+        nodes_copy.push({"labelType": d.labelType, "color": "red", "rectText": "", "x": replace_x, "y": replace_y});
         refresh();
       }
       else {
@@ -379,7 +390,9 @@ function loadCanvas() {
          return targetNode.x
         })
        .style("fill", "none")
-       .style("stroke", "black")
+       .style("stroke", function(d) {
+        return d.color;
+       })
        .style("stroke-width", 3)
 
       node = node.data(nodes);
@@ -409,7 +422,7 @@ function loadCanvas() {
             return "blue";
           }
           else {
-            return "red";
+            return d.color;
           }
         })
         .call(panelDrag)
@@ -447,9 +460,9 @@ function loadCanvas() {
       var x_val = d.x;
       var y_val = d.y;
 
-      invisible_node_ind = nodes.push({"labelType": "invisible", "rectText": "", x: x_val, y: y_val}) - 1;
-      nodes_copy.push({"labelType": "invisible", "rectText": "", x: x_val, y: y_val});
-      invisible_link_ind = links.push({"source": i, "target": invisible_node_ind}) - 1;
+      invisible_node_ind = nodes.push({"labelType": "invisible", "color": "red", "rectText": "", x: x_val, y: y_val}) - 1;
+      nodes_copy.push({"labelType": "invisible", "color": "red", "rectText": "", x: x_val, y: y_val});
+      invisible_link_ind = links.push({"source": i, "target": invisible_node_ind, "color": "black"}) - 1;
       refreshLinks();
 
       refresh();
@@ -550,6 +563,7 @@ function loadCanvas() {
 
     function invisible_click(d, i) {
       // console.log(d3.select(this)[0][0].x.baseVal.value, d3.select(invisible_node)[0][0].x.baseVal.value)
+      console.log(deleteMode);
       if (invisible_node) {
         d3.select(invisible_node)
           .attr("x", function(d, i) {
@@ -589,7 +603,7 @@ function loadCanvas() {
               // var g = links.pop();
               // console.log(g);
               d3.select(invisible_link).remove();
-              links.push({"source": parseInt(ind), "target": source_node_ind})
+              links.push({"source": parseInt(ind), "target": source_node_ind, "color": "black"})
               refreshLinks()
               // refresh();
               done = true;
