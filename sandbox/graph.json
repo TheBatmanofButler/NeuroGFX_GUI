@@ -1,9 +1,5 @@
 {"nodes":
-  [{"labelType": "small", "rectText": "hi", "x": 160, "y": 160},
-  {"labelType": "large", "rectText": "i", "x": 140, "y": 300},
-  {"labelType": "small", "rectText": "am", "x": 180, "y": 220},
-  {"labelType": "large", "rectText": "rectangle", "x": 400, "y": 160}],
+  [],
 "links":
-[{"source":1,"target":0},
-{"source":1,"target":2}]
+[]
 }
