@@ -48,11 +48,9 @@ function loadCanvas() {
                     links.splice(ind, 1);
                   }
                 }
-                // console.log(node.length);
-                // console.log(nodes.length);
-                // console.log(node[0].length);
+
                 d3.select(this).remove();
-                // console.log(this);
+
                 for (var k in nodes_copy) {
                   if (nodes_copy[k].x == d3.select(this).attr("x") &&
                       nodes_copy[k].y == d3.select(this).attr("y")) {
@@ -60,14 +58,9 @@ function loadCanvas() {
                     nodes_copy.splice(k, 1);
                   }
                 }
-                // nodes.splice(2, 1);
+
                 console.log(nodes);
                 refresh()
-                // console.log(i);
-                // console.log(node[0].length);
-                // nodes.splice(i, 1);
-                // console.log(node.length);
-                // console.log(nodes.length);
               }
             });
             link.on("click", function(d, i) {
@@ -288,7 +281,7 @@ function loadCanvas() {
       d3.select(this).attr("x", xGrid).attr("y", yGrid);
       nodes[i].x = xGrid;
       nodes[i].y = yGrid;
-      // console.log(d3.select(this));
+
 
       link.each(function(l, li) {
         if (l.source == i) {
@@ -297,13 +290,6 @@ function loadCanvas() {
           d3.select(this).attr("x2", xGrid).attr("y2", yGrid);
         }
       });
-
-      // for (var ind in labels[0]) {
-      //   if (ind != "parentNode" && labels[0][ind].textContent == d3.select(this)[0][0].textContent)  {
-      //   d3.select(labels[0][ind]).attr("x", xGrid)
-      //                            .attr("y", yGrid);
-      //   }
-      // }
     }
 
     function createNewPanelNode(d, i) {
@@ -335,10 +321,6 @@ function loadCanvas() {
         horizontal.style("stroke", "white");
       }
 
-      // if (this.x.baseVal.value < 20) {
-      //   d3.select(this).remove();
-      //   // refresh();
-      // }
     }
 
     // drag function that is used by panel nodes
@@ -429,21 +411,6 @@ function loadCanvas() {
         })
         .call(panelDrag)
         .on("dblclick", doubleClick)
-        // .on("contextmenu", addLabel);
-
-      // labels = node
-      //   .append("text")
-      //   .text(function (d, i) { return d.rectText; })
-      //   .attr("x", function (d) {
-      //     return d.x;
-      //   })
-      //   .attr("y", function (d) {
-      //     return d.y;
-      //   })
-      //   .style("text-anchor", "middle")
-      //   .style("fill", "#555")
-      //   .style("font-family", "Arial")
-      //   .style("font-size", 12)
 
       node.exit().remove();
 
@@ -481,7 +448,7 @@ function loadCanvas() {
     }
 
     function mousemove() {
-      // console.log(2);
+
       if (invisible_node) {
         var coords = d3.mouse(d3.select('body').node());
 
@@ -497,13 +464,12 @@ function loadCanvas() {
           var x_source = source_node.x;
           var y_source = source_node.y;
         }
-        // console.log(source_node);
+
 
         d3.select(invisible_node)
         .attr("y", function(d, i) {
 
             if (Math.abs(x_val - x_source) < 10) {
-              // // console.log(x_val);
 
               var modX = x_source % resolution
               if (modX >= 3) {
@@ -520,14 +486,11 @@ function loadCanvas() {
               else {
                 yGrid = coords[1] - modY
               }
-              // xGrid = x_val;
-              // yGrid = y_val;
+
               d3.select(invisible_node).attr("x", xGrid);
-              // console.log(yGrid);
               return yGrid;
             }
             else {
-              // console.log(2);
 
               var modX = coords[0] % resolution
               if (modX >= 3) {
@@ -545,8 +508,6 @@ function loadCanvas() {
                 yGrid = y_source - modY
               }
 
-              // xGrid = x_val;
-              // yGrid = y_val;
               d3.select(invisible_node).attr("x", xGrid);
               console.log(y_source);
               return yGrid;
@@ -564,7 +525,6 @@ function loadCanvas() {
     }
 
     function invisible_click(d, i) {
-      // console.log(d3.select(this)[0][0].x.baseVal.value, d3.select(invisible_node)[0][0].x.baseVal.value)
       console.log(deleteMode);
       if (invisible_node) {
         d3.select(invisible_node)
@@ -602,12 +562,11 @@ function loadCanvas() {
                 }
               }
               invisible_node = 0;
-              // var g = links.pop();
-              // console.log(g);
+
               d3.select(invisible_link).remove();
               links.push({"source": parseInt(ind), "target": source_node_ind, "color": "black"})
               refreshLinks()
-              // refresh();
+
               done = true;
               vertical.style("stroke", "white");
               horizontal.style("stroke", "white");
@@ -622,16 +581,5 @@ function loadCanvas() {
       }
     };
 
-    function addLabel(d, i) {
-      d3.event.preventDefault();
-      if (d.x != 10) {
-        var newlabel = prompt("Label text:", "");
-        nodes[i].rectText = newlabel;
-        labels[0][i].textContent = newlabel;
-        console.log(labels[0][i].textContent);
-        // nodes.push({"labelType": d.labelType, "rectText": "", "x": replace_x, "y": replace_y});
-        // refresh();
-      }
-    }
   });
 }
